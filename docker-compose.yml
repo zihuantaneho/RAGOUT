@@ -1,0 +1,21 @@
+services:
+  db:
+    container_name: rag_db
+    image: ankane/pgvector
+    ports:
+      - 5432:5432
+    volumes:
+      - rag_db_dev:/rag
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: ragdev
+      PGDATA: /rag
+
+  redis:
+    container_name: rag_redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+volumes:
+  rag_db_dev: 
