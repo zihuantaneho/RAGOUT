@@ -1,21 +1,59 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import Collection, Document
 
-class TextFileUploadForm(forms.Form):
-    file = forms.FileField(
-        label='Select a file',
-        help_text='Upload a .txt, .pdf, or .docx file to generate embeddings.',
+class CollectionForm(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ['name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Enter collection name'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Enter collection description',
+                'rows': 3
+            })
+        }
+
+class DocumentUploadForm(forms.Form):
+    files = forms.FileField(
+        help_text='Select one or more files to upload (.txt, .pdf, .docx)',
         widget=forms.FileInput(attrs={
-            'accept': '.txt,.pdf,.docx',
-            'class': 'form-control'
+            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+            'name': 'files[]',
+            'accept': '.txt,.pdf,.docx'
+        })
+    )
+    collection = forms.ModelChoiceField(
+        queryset=Collection.objects.all(),
+        empty_label="Select a collection",
+        widget=forms.Select(attrs={
+            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
         })
     )
 
 class SearchForm(forms.Form):
     query = forms.CharField(
-        label='Ask a question',
-        help_text='Enter your question about the uploaded text.',
+        label='Search Query',
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'What would you like to know about the text?'
+            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+            'placeholder': 'Enter your search query'
         })
-    ) 
+    )
+    collection = forms.ModelChoiceField(
+        queryset=Collection.objects.all(),
+        empty_label="All Collections",
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+        })
+    )
+
+class SignUpForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2') 

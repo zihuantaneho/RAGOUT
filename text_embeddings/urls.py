@@ -16,11 +16,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from embeddings.views import upload_file, search, document_status
+from django.conf import settings
+from django.conf.urls.static import static
+from embeddings.views import (
+    index, collections_list, collection_detail,
+    delete_collection, delete_document, download_document,
+    search, document_status, login_view, logout_view, signup_view
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', upload_file, name='upload_file'),
+    path('', index, name='index'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('signup/', signup_view, name='signup'),
+    path('collections/', collections_list, name='collections_list'),
+    path('collections/<uuid:collection_id>/', collection_detail, name='collection_detail'),
+    path('collections/<uuid:collection_id>/delete/', delete_collection, name='delete_collection'),
+    path('documents/<uuid:document_id>/delete/', delete_document, name='delete_document'),
+    path('documents/<uuid:document_id>/download/', download_document, name='download_document'),
     path('search/', search, name='search'),
     path('status/<uuid:document_id>/', document_status, name='document_status'),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
