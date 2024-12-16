@@ -10,12 +10,6 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        background: {
-                            light: '#F8F7FC',
-                            dark: '#1A1B1E'
-                        }
-                    },
                     typography: {
                         DEFAULT: {
                             css: {
@@ -45,26 +39,9 @@
             }
         }
     </script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #F8F7FC 0%, #FFF5F7 100%);
-        }
-        .dark body {
-            background: linear-gradient(135deg, #1A1B1E 0%, #2C2E33 100%);
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .dark .glass-effect {
-            background: rgba(44, 46, 51, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
 </head>
-<body class="h-full transition-colors duration-200">
-    <nav class="glass-effect shadow-lg fixed w-full z-10">
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <nav class="bg-white dark:bg-gray-800 shadow transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
@@ -103,7 +80,7 @@
                         <form method="post" action="{% url 'logout' %}" class="inline">
                             {% csrf_token %}
                             <button type="submit" 
-                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-900 transition-colors duration-200">
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-900 transition-colors duration-200">
                                 Log Out
                             </button>
                         </form>
@@ -113,11 +90,11 @@
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 pt-20">
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {% if messages %}
         <div class="px-4 sm:px-0">
             {% for message in messages %}
-            <div class="rounded-lg p-4 mb-4 glass-effect {% if message.tags == 'success' %}text-green-700 dark:text-green-100{% elif message.tags == 'error' %}text-red-700 dark:text-red-100{% else %}text-blue-700 dark:text-blue-100{% endif %} transition-colors duration-200">
+            <div class="rounded-md p-4 mb-4 {% if message.tags == 'success' %}bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-100{% elif message.tags == 'error' %}bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-100{% else %}bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-100{% endif %} transition-colors duration-200">
                 {{ message }}
             </div>
             {% endfor %}

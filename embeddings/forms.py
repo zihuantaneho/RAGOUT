@@ -20,17 +20,16 @@ class CollectionForm(forms.ModelForm):
         }
 
 class DocumentUploadForm(forms.Form):
-    files = forms.FileField(
-        help_text='Select one or more files to upload (.txt, .pdf, .docx)',
+    file = forms.FileField(
         widget=forms.FileInput(attrs={
             'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
-            'name': 'files[]',
             'accept': '.txt,.pdf,.docx'
         })
     )
     collection = forms.ModelChoiceField(
         queryset=Collection.objects.all(),
         empty_label="Select a collection",
+        required=False,
         widget=forms.Select(attrs={
             'class': 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
         })

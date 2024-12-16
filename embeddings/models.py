@@ -80,6 +80,7 @@ class TextEmbedding(models.Model):
     embedding = ArrayField(models.FloatField(), size=1536)  # OpenAI embeddings are 1536-dimensional
     created_at = models.DateTimeField(auto_now_add=True)
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='embeddings')
+    chunk_index = models.IntegerField()  # Add this field to track the order of chunks
 
     def __str__(self):
         return f"Embedding for text: {self.text[:50]}..."
@@ -88,6 +89,7 @@ class TextEmbedding(models.Model):
         indexes = [
             models.Index(fields=['created_at']),
         ]
+        ordering = ['chunk_index']  # Order by chunk index by default
 
     @classmethod
     def create_vector_extension(cls):

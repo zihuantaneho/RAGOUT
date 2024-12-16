@@ -30,7 +30,8 @@ def process_document(document_id, file_content, filename):
                 TextEmbedding.objects.create(
                     text=paragraph,
                     embedding=embedding,
-                    document=document
+                    document=document,
+                    chunk_index=i
                 )
             document.processed_paragraphs = i + 1
             document.save()

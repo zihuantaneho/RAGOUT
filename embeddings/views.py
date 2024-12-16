@@ -87,36 +87,39 @@ def collection_detail(request, collection_id):
     if request.method == 'POST':
         form = DocumentUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            files = request.FILES.getlist('files')
+            file = request.FILES['file']
             
-            for file in files:
-                # Save file to media directory
-                file_path = default_storage.save(
-                    os.path.join('documents', file.name),
-                    ContentFile(file.read())
-                )
-                
-                # Create document record
-                document = Document.objects.create(
-                    filename=file.name,
-                    collection=collection,
-                    status='pending'
-                )
-                
-                # Start async processing
-                with open(default_storage.path(file_path), 'rb') as f:
-                    process_document.delay(
-                        document_id=str(document.id),
-                        file_content=f.read(),
-                        filename=file.name
-                    )
+            # Create documents directory if it doesn't exist
+            documents_dir = os.path.join('media', 'documents')
+            os.makedirs(documents_dir, exist_ok=True)
             
-            messages.success(request, f'{len(files)} document(s) uploaded successfully')
+            # Read file content
+            file_content = file.read()
+            
+            # Save file to media directory
+            file_path = default_storage.save(
+                os.path.join('documents', file.name),
+                ContentFile(file_content)
+            )
+            
+            # Create document record
+            document = Document.objects.create(
+                filename=file.name,
+                collection=collection,
+                status='pending'
+            )
+            
+            # Start processing task with file content
+            process_document.delay(
+                document.id,
+                file_content,
+                file.name
+            )
+            
+            messages.success(request, 'Document uploaded successfully')
             return redirect('collection_detail', collection_id=collection_id)
     else:
-        form = DocumentUploadForm(initial={'collection': collection})
-        # Filter collection choices to only show user's collections
-        form.fields['collection'].queryset = Collection.objects.filter(user=request.user)
+        form = DocumentUploadForm()
     
     return render(request, 'embeddings/collection_detail.html', {
         'collection': collection,
