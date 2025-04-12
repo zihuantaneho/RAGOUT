@@ -5,7 +5,7 @@ from openai import RateLimitError, AuthenticationError
 
 # Initialize OpenAI client with API key
 client = OpenAI(
-    api_key='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'
+    api_key=''
 )
 
 def read_paragraphs(filename):
